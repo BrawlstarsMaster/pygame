@@ -12,7 +12,7 @@ WHITE = (255, 255, 255)
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 
-BLOCK_SIZE = 30
+BLOCK_SIZE = 20
 snake_speed = 10
 
 background_images = ["background.png", "background1.png", "background2.png"]
@@ -44,7 +44,7 @@ RIGHT = 3
 
 class Snake:
     def __init__(self):
-        self.length = 5
+        self.length = 1
         self.positions = [((WIDTH / 2), (HEIGHT / 2))]
         self.direction = random.choice([UP, DOWN, LEFT, RIGHT])
         self.color = GREEN
@@ -70,7 +70,10 @@ class Snake:
 
     def draw(self, surface):
         for i, p in enumerate(self.positions):
-            pygame.draw.rect(surface, self.color, (p[0], p[1], BLOCK_SIZE, BLOCK_SIZE))
+            if i == 0:
+                surface.blit(head_image, p)
+            else:
+                pygame.draw.rect(surface, WHITE, (p[0], p[1], BLOCK_SIZE, BLOCK_SIZE))
 
     def collide(self):
         if self.get_head_position() in self.positions[1:]:
@@ -115,10 +118,6 @@ while running:
         screen.blit(background_image, (0, 0))
         text = font.render("Press SPACE to play, Q to quit, C to customize", True, WHITE)
         screen.blit(text, (WIDTH // 2 - text.get_width() // 2, HEIGHT // 2))
-
-        # Score board
-        score_text = font.render("Record: " + str(record) + "    Recent Score: " + str(score), True, WHITE)
-        screen.blit(score_text, (WIDTH // 2 - score_text.get_width() // 2, HEIGHT // 2 + 50))
 
         pygame.display.flip()
 
@@ -195,9 +194,8 @@ while running:
         pygame.display.flip()
         pygame.time.Clock().tick(snake_speed)
 
-        # Increase snake size over time
-        if snake.length < 50:
-            snake.length += 1
+        # Increase snake speed over time
+        snake_speed += 0.01
 
     while game_over:
         for event in pygame.event.get():
@@ -224,5 +222,6 @@ while running:
         pygame.display.flip()
 
 pygame.quit()
+
 
 
